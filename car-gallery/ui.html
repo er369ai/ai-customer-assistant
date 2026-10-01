@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Asistan</title>
+<style>
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --ink: #1c2320; --muted: #66706b; --line: #dde2dc;
+  --accent: #1f7a55; --accent-ink: #ffffff; --me: #d9f2e4; --ai: #ffffff; --note: #eef3ff;
+  --warn: #fff3dc; --warn-ink: #7a4b00; --err: #fde8e6; --err-ink: #a1261b; --ok: #1f7a55;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121614; --panel: #1b201d; --ink: #e6ebe7; --muted: #9aa49e; --line: #2e3531;
+    --accent: #3fae80; --accent-ink: #0d1411; --me: #1f3d2f; --ai: #222826; --note: #1d2536;
+    --warn: #3a2e14; --warn-ink: #f3cf8a; --err: #3d1d1a; --err-ink: #ffb4aa; --ok: #6fd3a4;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+button, input, select, textarea { font: inherit; color: inherit; }
+header { position: sticky; top: 0; z-index: 2; background: var(--panel); border-bottom: 1px solid var(--line);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 10px 16px; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand .dot { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); flex: none;
+  display: grid; place-items: center; color: var(--accent-ink); font-weight: 700; font-size: 13px; }
+.brand b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand small { color: var(--muted); }
+nav { display: flex; gap: 4px; flex-wrap: wrap; }
+nav button { border: 0; background: none; padding: 7px 11px; border-radius: 8px; cursor: pointer; color: var(--muted); }
+nav button i { font-style: normal; font-size: 12px; opacity: .75; }
+nav button.on { background: var(--bg); color: var(--ink); font-weight: 600; }
+.badge { background: var(--accent); color: var(--accent-ink); border-radius: 10px; padding: 0 7px; font-size: 12px; margin-left: 2px; }
+.banner { background: var(--warn); color: var(--warn-ink); padding: 10px 16px; border-bottom: 1px solid var(--line); }
+main { max-width: 980px; margin: 0 auto; padding: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+h2 { font-size: 16px; margin: 0 0 6px; }
+.muted, small { color: var(--muted); }
+small { font-size: 12.5px; }
+.primary, .ghost { border-radius: 8px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--accent); }
+.primary { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.ghost { background: transparent; color: var(--accent); }
+button:disabled { opacity: .5; cursor: default; }
+.link { border: 0; background: none; color: inherit; text-decoration: underline; cursor: pointer; padding: 0; font-weight: 600; }
+input, select, textarea { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 7px 9px; min-width: 0; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+.row input { flex: 1 1 260px; }
+.msg { font-size: 13.5px; }
+.msg.ok, .ok { color: var(--ok); }
+.msg.err, .errtext { color: var(--err-ink); }
+.warntext { color: var(--warn-ink); }
+
+/* chat */
+.chat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column;
+  height: calc(100vh - 120px); min-height: 460px; overflow: hidden; }
+.chat-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.chat-head small { display: block; }
+.msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; background: var(--bg); }
+.msgs > div { display: flex; flex-direction: column; max-width: 78%; }
+.msg-me { align-self: flex-end; align-items: flex-end; }
+.msg-ai { align-self: flex-start; }
+.msg-note, .msg-err { align-self: center; max-width: 92% !important; }
+.bubble { padding: 8px 11px; border-radius: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg-me .bubble { background: var(--me); border-bottom-right-radius: 4px; }
+.msg-ai .bubble { background: var(--ai); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.msg-note .bubble { background: var(--note); font-size: 13.5px; }
+.msg-err .bubble { background: var(--err); color: var(--err-ink); font-size: 13.5px; }
+.typing .bubble { color: var(--muted); font-style: italic; }
+.meta { font-size: 11.5px; color: var(--muted); margin: 2px 4px 0; }
+.empty-chat { margin: auto; text-align: center; color: var(--muted); max-width: 420px; }
+.chips { display: flex; gap: 6px; padding: 8px 14px 0; overflow-x: auto; }
+.chips button { flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 16px; padding: 5px 11px; cursor: pointer;
+  font-size: 13px; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#composer { display: flex; gap: 8px; padding: 10px 14px 14px; }
+#composer textarea { flex: 1; resize: none; max-height: 140px; }
+
+/* setup */
+.form { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 8px; }
+.form label { display: flex; flex-direction: column; gap: 4px; }
+.form label.wide { grid-column: 1 / -1; }
+.form label > span { font-weight: 600; font-size: 13.5px; }
+.tablewrap { overflow-x: auto; margin: 8px 0; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; }
+th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px; white-space: nowrap; border-bottom: 1px solid var(--line); }
+td { padding: 3px; }
+td input { width: 100%; min-width: 5em; padding: 5px 6px; }
+td select { width: auto; padding: 5px 4px; }
+.x { border: 0; background: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 2px 8px; }
+.savebar { position: sticky; bottom: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 14px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; }
+
+/* leads + cost */
+.lead-top { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+.tag { background: var(--note); border-radius: 6px; padding: 1px 8px; font-size: 12.5px; }
+.lead .line { margin-top: 4px; }
+.lead .line > span:first-child { color: var(--muted); }
+.lead.done { opacity: .6; }
+.lead.late { border-left: 4px solid var(--err-ink); }
+.tag.late { background: var(--err); color: var(--err-ink); font-weight: 600; }
+.remind { background: var(--err); color: var(--err-ink); }
+.log[hidden] { display: none; }
+a { color: var(--accent); }
+.log { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.log div { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13.5px; }
+.log b { color: var(--muted); font-weight: 600; }
+.empty { text-align: center; color: var(--muted); padding: 40px 16px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.stat b { display: block; font-size: 22px; }
+@media (max-width: 600px) {
+  .msgs > div { max-width: 92%; }
+  .chat { height: calc(100dvh - 176px); }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="dot">AI</span><div><b id="bizName">AI Asistan</b><small id="kind"></small></div></div>
+  <nav>
+    <button data-tab="chat" class="on">Sohbet <i>Chat</i></button>
+    <button data-tab="setup">Kurulum <i>Setup</i></button>
+    <button data-tab="leads">Talepler <i>Leads</i><span id="leadCount" class="badge" hidden></span></button>
+    <button data-tab="cost">Maliyet <i>Cost</i></button>
+  </nav>
+</header>
+<div id="banner" class="banner" hidden></div>
+<div id="remind" class="banner remind" hidden></div>
+
+<main>
+  <section id="tab-chat">
+    <div class="chat">
+      <div class="chat-head">
+        <div><b>Müşteri görünümü · Customer view</b><small>Write as a customer would. The AI answers only from the Setup info.</small></div>
+        <button id="newChat" class="ghost">Yeni sohbet · New chat</button>
+      </div>
+      <div id="msgs" class="msgs"></div>
+      <div id="chips" class="chips"></div>
+      <form id="composer">
+        <textarea id="input" rows="1" dir="auto" maxlength="1500" placeholder="Mesaj yazın · Write a message"></textarea>
+        <button id="sendBtn" class="primary">Gönder</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="tab-setup" hidden>
+    <div class="card">
+      <h2>1 · Claude API key</h2>
+      <p class="muted">Get one at console.anthropic.com → API Keys. It is stored only on this computer (data/secret.json) and never shown again.</p>
+      <div id="keyStatus"></div>
+      <div class="row">
+        <input id="keyInput" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…">
+        <button id="keySave" class="primary">Kaydet · Save</button>
+        <button id="keyTest" class="ghost">Test</button>
+      </div>
+      <div id="keyMsg" class="msg"></div>
+    </div>
+    <div class="card">
+      <h2>2 · İşletme bilgileri · Business info</h2>
+      <p class="muted">Fields with * are required. The owner's WhatsApp is never shown to customers; it is only used to contact leads.</p>
+      <div id="bizForm" class="form"></div>
+    </div>
+    <div class="card">
+      <h2 id="itemsTitle">3 · Stock</h2>
+      <p class="muted">The AI only offers what is in this table. Mark sold items as sold; it will stop offering them.</p>
+      <div class="tablewrap"><table id="items"></table></div>
+      <button id="addItem" class="ghost">+ Satır ekle · Add row</button>
+    </div>
+    <div class="card">
+      <h2>4 · Model</h2>
+      <select id="model"></select>
+      <p class="muted">See the Cost tab for what each chat actually costs.</p>
+    </div>
+    <div class="savebar"><span id="saveMsg" class="msg"></span><button id="saveBiz" class="primary">Kaydet · Save all</button></div>
+  </section>
+
+  <section id="tab-leads" hidden><div id="leads"></div></section>
+  <section id="tab-cost" hidden><div id="cost"></div></section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+function el(tag, props = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (v == null) continue;
+    if (k === "class") n.className = v;
+    else if (k === "text") n.textContent = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v);
+  }
+  for (const c of kids) if (c != null) n.append(c);
+  return n;
+}
+let B = null, chatId = null, busy = false, baseTitle = "AI Asistan", alerted = new Set();
+const REQ = { visit: "Görme · Visit", test_drive: "Test sürüşü · Test drive", reservation: "Rezervasyon · Reserve",
+              offer: "Teklif · Offer", callback: "Arama · Callback", question: "Soru · Question" };
+
+async function api(path, body) {
+  const opt = body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+  let r, j;
+  try { r = await fetch(path, opt); } catch { throw new Error("The assistant app isn't running. Start it with ./start.sh"); }
+  try { j = await r.json(); } catch { j = { error: "Unexpected response (" + r.status + ")" }; }
+  if (!r.ok) throw Object.assign(new Error(j.error || r.status), { setup: !!j.setup });
+  return j;
+}
+function flash(sel, text, kind) { const n = $(sel); n.textContent = text; n.className = "msg " + (kind || ""); }
+function fmtTime(t) { try { return new Date(t).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" }); } catch { return t; } }
+
+/* tabs */
+function showTab(name) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
+  for (const s of document.querySelectorAll("main > section")) s.hidden = s.id !== "tab-" + name;
+  if (name === "leads") loadLeads().catch(e => $("#leads").replaceChildren(el("div", { class: "empty errtext", text: e.message })));
+  if (name === "cost") loadCost().catch(e => $("#cost").replaceChildren(el("div", { class: "empty errtext", text: e.message })));
+  try { localStorage.setItem("tab", name); } catch {}
+}
+document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+/* business + setup */
+async function loadBusiness() {
+  B = await api("/api/business");
+  const name = B.business.name || "AI Asistan";
+  $("#bizName").textContent = name;
+  baseTitle = name + " · AI";
+  document.title = baseTitle;
+  $("#kind").textContent = B.kind_label;
+  renderStatus(); renderSetup(); renderChips();
+}
+async function refreshStatus() {
+  const fresh = await api("/api/business");
+  B.setup = fresh.setup;
+  renderStatus();
+}
+function renderStatus() {
+  const m = B.setup.missing, ban = $("#banner");
+  if (!m.length) ban.hidden = true;
+  else {
+    ban.hidden = false;
+    ban.replaceChildren(el("b", { text: "Kurulum eksik · Setup needed: " }), m.join(", ") + "  ",
+      el("button", { class: "link", text: "Kuruluma git · Go to Setup", onclick: () => showTab("setup") }));
+  }
+  const k = B.setup.key;
+  $("#keyStatus").replaceChildren(k.set
+    ? el("span", { class: "ok", text: "✓ Kayıtlı · Saved (" + k.hint + ")" + (k.source === "env" ? ", from ANTHROPIC_API_KEY" : "") })
+    : el("span", { class: "warntext", text: "Henüz yok · Not set yet" }));
+}
+function renderSetup() {
+  const form = $("#bizForm");
+  form.replaceChildren();
+  for (const f of B.business_fields) {
+    const id = "biz-" + f.key;
+    const input = f.long ? el("textarea", { id, rows: 6, dir: "auto" }) : el("input", { id, dir: "auto", type: f.phone ? "tel" : "text" });
+    input.value = B.business[f.key] || "";
+    if (f.placeholder) input.placeholder = f.placeholder;
+    form.append(el("label", { class: f.long ? "wide" : null }, el("span", { text: f.label + (f.required ? " *" : "") }), input,
+      f.help ? el("small", { text: f.help }) : null));
+  }
+  $("#itemsTitle").textContent = "3 · " + B.item_label + " (" + B.items.length + ")";
+  $("#items").replaceChildren(
+    el("thead", {}, el("tr", {}, ...B.item_fields.map(f => el("th", { text: f.label })), el("th"))),
+    el("tbody", {}, ...B.items.map(itemRow)));
+  $("#model").replaceChildren(...B.models.map(m => el("option", { value: m.id, text: m.label })));
+  $("#model").value = B.model;
+}
+function itemRow(it = {}) {
+  const tr = el("tr");
+  for (const f of B.item_fields) {
+    const v = it[f.key] || "";
+    let inp;
+    if (f.options) {
+      const opts = f.options.includes(v) || !v ? f.options : [v, ...f.options];   // keep values the list doesn't know
+      inp = el("select", {}, ...opts.map(o => el("option", { value: o, text: o })));
+      inp.value = v || f.options[0];
+    } else {
+      inp = el("input", { dir: "auto" });
+      inp.value = v;
+      if (f.width) inp.style.minWidth = f.width;
+    }
+    inp.dataset.key = f.key;
+    tr.append(el("td", {}, inp));
+  }
+  tr.append(el("td", {}, el("button", { class: "x", title: "Sil · Delete", "aria-label": "Delete row", text: "×", onclick: () => tr.remove() })));
+  return tr;
+}
+function collectItems() {
+  return [...$("#items tbody").rows].map(tr => Object.fromEntries([...tr.querySelectorAll("[data-key]")].map(i => [i.dataset.key, i.value])));
+}
+$("#addItem").addEventListener("click", () => { const tr = itemRow(); $("#items tbody").append(tr); tr.querySelector("input,select").focus(); });
+$("#saveBiz").addEventListener("click", async () => {
+  const business = Object.fromEntries(B.business_fields.map(f => [f.key, $("#biz-" + f.key).value]));
+  $("#saveBiz").disabled = true;
+  try {
+    await api("/api/business", { business, items: collectItems(), model: $("#model").value });
+    await loadBusiness();
+    flash("#saveMsg", "✓ Kaydedildi · Saved", "ok");
+  } catch (e) { flash("#saveMsg", e.message, "err"); }
+  finally { $("#saveBiz").disabled = false; }
+});
+$("#keySave").addEventListener("click", async () => {
+  const key = $("#keyInput").value.trim();
+  if (!key) return flash("#keyMsg", "Paste the key first.", "err");
+  try { await api("/api/key", { key }); $("#keyInput").value = ""; await refreshStatus(); flash("#keyMsg", "✓ Saved. Press Test to check it works.", "ok"); }
+  catch (e) { flash("#keyMsg", e.message, "err"); }
+});
+$("#keyTest").addEventListener("click", async () => {
+  flash("#keyMsg", "Checking…");
+  try { const r = await api("/api/key/test", {}); flash("#keyMsg", "✓ Key works, " + r.model + " is available.", "ok"); }
+  catch (e) { flash("#keyMsg", e.message, "err"); }
+});
+
+/* chat */
+function addMsg(kind, text, meta) {
+  $("#msgs").querySelector(".empty-chat")?.remove();
+  const m = el("div", { class: kind }, el("div", { class: "bubble", dir: "auto", text }));
+  if (meta) m.append(el("div", { class: "meta", text: meta }));
+  $("#msgs").append(m);
+  $("#msgs").scrollTop = $("#msgs").scrollHeight;
+  return m;
+}
+function emptyChat() {
+  $("#msgs").replaceChildren(el("div", { class: "empty-chat" },
+    el("p", { text: "Try a question below, or write your own in Turkish, English, Russian or Persian." }),
+    el("small", { text: "When a customer wants a visit or a call, the AI saves it under Leads for the owner." })));
+}
+function renderChips() {
+  $("#chips").replaceChildren(...(B.examples || []).map(t => el("button", { type: "button", dir: "auto", title: t, text: t, onclick: () => send(t) })));
+}
+async function newChat() {
+  chatId = (await api("/api/chat/new", {})).id;
+  emptyChat();
+}
+async function send(text) {
+  text = text.trim();
+  if (!text || busy) return;
+  busy = true; $("#sendBtn").disabled = true;
+  addMsg("msg-me", text);
+  $("#input").value = ""; grow();
+  const typing = addMsg("msg-ai typing", "yazıyor… · typing…");
+  try {
+    if (!chatId) chatId = (await api("/api/chat/new", {})).id;
+    const r = await api("/api/chat", { id: chatId, text });
+    typing.remove();
+    addMsg("msg-ai", r.reply, "≈ $" + r.usd.toFixed(3));
+    for (const l of r.leads) addMsg("msg-note", "📋 Talep kaydedildi · Lead saved: " + (l.customer_name || "?") + ", " + (REQ[l.request] || l.request));
+    if (r.leads.length) loadLeadCount();
+  } catch (e) {
+    typing.remove();
+    addMsg("msg-err", e.message);
+    if (e.setup) refreshStatus().catch(() => {});
+  } finally {
+    busy = false; $("#sendBtn").disabled = false; $("#input").focus();
+  }
+}
+function grow() { const t = $("#input"); t.style.height = "auto"; t.style.height = Math.min(t.scrollHeight, 140) + "px"; }
+$("#input").addEventListener("input", grow);
+$("#input").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send($("#input").value); } });
+$("#composer").addEventListener("submit", e => { e.preventDefault(); send($("#input").value); });
+$("#newChat").addEventListener("click", () => newChat().catch(e => addMsg("msg-err", e.message)));
+
+/* leads */
+function waited(h) {
+  if (h < 1) { const m = Math.max(1, Math.round(h * 60)); return m + " dk bekliyor · waiting " + m + " min"; }
+  if (h < 48) { const n = Math.round(h); return n + " saat bekliyor · waiting " + n + " h"; }
+  const d = Math.round(h / 24); return d + " gündür bekliyor · waiting " + d + " days";
+}
+/* Badge, red banner, tab title and desktop alert for customers the owner hasn't called yet. */
+function remind(leads, hours) {
+  const fresh = leads.filter(l => l.status === "new"), late = fresh.filter(l => l.overdue);
+  $("#leadCount").hidden = !fresh.length; $("#leadCount").textContent = fresh.length;
+  document.title = (late.length ? "(" + late.length + ") " : "") + baseTitle;
+  const ban = $("#remind");
+  ban.hidden = !late.length;
+  if (late.length) {
+    const names = late.slice(0, 3).map(l => l.customer_name || "?").join(", ") + (late.length > 3 ? "…" : "");
+    ban.replaceChildren(el("b", { text: "⏰ " + late.length + " müşteri " + hours + "+ saattir aranmayı bekliyor · " +
+      late.length + " customer(s) waiting over " + hours + " h for your call: " }), names + "  ",
+      el("button", { class: "link", text: "Taleplere git · Open Leads", onclick: () => showTab("leads") }));
+  }
+  const unseen = late.filter(l => !alerted.has(l.id));
+  unseen.forEach(l => alerted.add(l.id));
+  if (unseen.length && "Notification" in window && Notification.permission === "granted") {
+    const l = unseen[0];
+    new Notification("⏰ " + (l.customer_name || "Müşteri") + " · " + waited(l.age_hours), {
+      body: (l.summary_tr || l.summary_en || l.item || "") + (unseen.length > 1 ? "  (+" + (unseen.length - 1) + ")" : ""), tag: "lead-" + l.id });
+  }
+}
+async function loadLeadCount() {
+  try { const r = await api("/api/leads"); remind(r.leads, r.remind_hours); } catch {}
+}
+async function loadLeads() {
+  const { leads, remind_hours } = await api("/api/leads");
+  const box = $("#leads");
+  remind(leads, remind_hours);
+  const alerts = "Notification" in window && Notification.permission === "default"
+    ? el("div", { class: "row" }, el("button", { class: "ghost", text: "🔔 Masaüstü uyarılarını aç · Turn on desktop alerts",
+        onclick: async () => { await Notification.requestPermission(); loadLeads(); } }),
+        el("small", { text: "Pops up on this computer when a customer has waited too long (while this page is open)." }))
+    : null;
+  if (!leads.length) return box.replaceChildren(...[alerts, el("div", { class: "empty", text: "Henüz talep yok · No leads yet. When a customer wants a visit or a call, the AI saves it here." })].filter(Boolean));
+  box.replaceChildren(...[alerts, ...leads.map(leadCard)].filter(Boolean));
+}
+function line(label, value) { return value ? el("div", { class: "line", dir: "auto" }, el("span", { text: label + ": " }), value) : null; }
+function leadCard(l) {
+  let digits = (l.phone || "").replace(/\D/g, "");          // same rules as wa_digits() in assistant.py
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  else if (digits.length === 11 && digits.startsWith("0")) digits = "90" + digits.slice(1);
+  else if (digits.length === 10 && digits.startsWith("5")) digits = "90" + digits;
+  const phone = digits.length >= 8
+    ? el("a", { href: "https://wa.me/" + digits, target: "_blank", rel: "noopener", text: l.phone })
+    : (l.phone || null);
+  const log = el("div", { class: "log", hidden: "" });
+  const toggle = el("button", { class: "ghost", text: "Sohbeti göster · Show chat", onclick: async () => {
+    if (!log.hidden) { log.hidden = true; return; }
+    try {
+      const { lines } = await api("/api/chatlog?id=" + encodeURIComponent(l.chat));
+      log.replaceChildren(...lines.map(x => el("div", { dir: "auto" }, el("b", { text: (x.who === "customer" ? "Müşteri" : "AI") + ": " }), x.text)));
+    } catch (e) { log.replaceChildren(el("div", { class: "errtext", text: e.message })); }
+    log.hidden = false;
+  } });
+  const done = el("button", { class: l.status === "done" ? "ghost" : "primary", text: l.status === "done" ? "Yeniden aç · Reopen" : "Tamamlandı · Done",
+    onclick: async () => { await api("/api/leads/status", { id: l.id, status: l.status === "done" ? "new" : "done" }); loadLeads(); } });
+  return el("div", { class: "card lead" + (l.status === "done" ? " done" : l.overdue ? " late" : "") },
+    el("div", { class: "lead-top" }, el("b", { dir: "auto", text: l.customer_name || "(isim yok · no name)" }),
+      el("span", { class: "tag", text: REQ[l.request] || l.request }),
+      l.status === "new" ? el("span", { class: l.overdue ? "tag late" : "tag", text: (l.overdue ? "⏰ " : "") + waited(l.age_hours) }) : null,
+      el("small", { text: fmtTime(l.t) + " · " + (l.language || "").toUpperCase() })),
+    line("Telefon · Phone", phone), line("İlan · Listing", l.item), line("Zaman · When", l.preferred_time),
+    line("Özet", l.summary_tr), line("Summary", l.summary_en),
+    el("div", { class: "row" }, done, toggle), log);
+}
+
+/* cost */
+function stat(label, value) { return el("div", { class: "stat" }, el("small", { text: label }), el("b", { text: value })); }
+async function loadCost() {
+  const s = await api("/api/usage");
+  const per = s.usd_per_chat;
+  $("#cost").replaceChildren(
+    el("div", { class: "stats" },
+      stat("Bugün · Today", "$" + s.usd_today.toFixed(3)), stat("Toplam · Total", "$" + s.usd_total.toFixed(3)),
+      stat("Sohbet · Chats", String(s.chats)), stat("Sohbet başına · Per chat", "$" + per.toFixed(3))),
+    el("div", { class: "card" }, el("h2", { text: "Fiyatlandırma · Pricing it" }),
+      el("p", { text: per
+        ? "At $" + per.toFixed(3) + " per chat, a business with 300 chats a month costs you about $" + (per * 300).toFixed(2) + " a month in AI. Charge a monthly fee well above that."
+        : "No chats yet. Have a few test conversations, then come back: this page shows what one chat really costs, so you can set a monthly price." }),
+      el("small", { text: s.calls + " API calls · " + s.cache_read.toLocaleString() + " tokens served from cache (cheaper)" })));
+}
+
+/* start */
+(async () => {
+  try {
+    await loadBusiness();
+    emptyChat();
+    loadLeadCount();
+    setInterval(loadLeadCount, 60000);    // re-check every minute so a waiting customer is never forgotten
+    let tab = "chat";
+    try { tab = localStorage.getItem("tab") || "chat"; } catch {}
+    if (["chat", "setup", "leads", "cost"].includes(location.hash.slice(1))) tab = location.hash.slice(1);
+    if (B.setup.missing.length) tab = "setup";
+    showTab(tab);
+  } catch (e) {
+    $("#msgs").replaceChildren(el("div", { class: "empty-chat errtext", text: e.message }));
+  }
+})();
+</script>
+</body>
+</html>

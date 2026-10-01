@@ -1,0 +1,272 @@
+{
+  "port": 8771,
+  "kind_label": "Emlak ofisi · Estate agency",
+  "model": "claude-opus-5-5",
+  "business": {
+    "name": "Demo Emlak",
+    "city": "Lefkoşa",
+    "address": "(demo) Kumsal, Lefkoşa",
+    "maps_link": "",
+    "hours": "Pazartesi–Cumartesi 09:00–18:00, Pazar kapalı",
+    "currency": "Sterlin (£)",
+    "owner_name": "",
+    "owner_whatsapp": "",
+    "remind_hours": "2",
+    "notes": "Yerinde görme randevu ile yapılır; hafta içi ve cumartesi.\nKiralıklarda genellikle 6 aylık kira peşin ve 1 kira depozito istenir; ev sahibine göre değişir.\nYabancı uyruklu alıcılar için satın alma izni ve tapu işlemleri avukat aracılığıyla yürütülür; ayrıntıları temsilcimiz anlatır.\nKomisyon oranı için temsilcimizle görüşün.\nSatış fiyatları sterlin (£) olarak toplam, kiralar aylık sterlin olarak verilmiştir."
+  },
+  "business_fields": [
+    {
+      "key": "name",
+      "label": "İşletme adı · Business name",
+      "required": true
+    },
+    {
+      "key": "city",
+      "label": "Şehir · City",
+      "required": true
+    },
+    {
+      "key": "address",
+      "label": "Adres · Address",
+      "required": true
+    },
+    {
+      "key": "maps_link",
+      "label": "Google Maps linki · Maps link",
+      "placeholder": "https://maps.app.goo.gl/…"
+    },
+    {
+      "key": "hours",
+      "label": "Çalışma saatleri · Opening hours",
+      "required": true
+    },
+    {
+      "key": "currency",
+      "label": "Para birimi · Currency",
+      "required": true
+    },
+    {
+      "key": "owner_name",
+      "label": "Yetkili adı · Agent's name",
+      "required": true,
+      "help": "The AI uses this name when it says who will call the client back."
+    },
+    {
+      "key": "owner_whatsapp",
+      "label": "Yetkili WhatsApp · Agent's WhatsApp",
+      "required": true,
+      "phone": true,
+      "private": true,
+      "placeholder": "905331234567"
+    },
+    {
+      "key": "remind_hours",
+      "label": "Hatırlatma (saat) · Remind after (hours)",
+      "required": true,
+      "number": true,
+      "private": true,
+      "help": "If a waiting client isn't marked done after this many hours, the app reminds you."
+    },
+    {
+      "key": "notes",
+      "label": "Kurallar ve bilgiler · Policies and info",
+      "long": true,
+      "help": "Viewings, deposits, rent terms, commission: anything clients ask often. The AI treats this as true, so write only what is."
+    }
+  ],
+  "item_label": "İlanlar · Listings",
+  "item_fields": [
+    {
+      "key": "kod",
+      "label": "Kod · Code",
+      "width": "4.5em"
+    },
+    {
+      "key": "islem",
+      "label": "İşlem · Deal",
+      "options": [
+        "Satılık",
+        "Kiralık"
+      ]
+    },
+    {
+      "key": "tip",
+      "label": "Tip · Type",
+      "options": [
+        "Daire",
+        "Villa",
+        "Müstakil ev",
+        "Arsa",
+        "Dükkan",
+        "Ofis"
+      ]
+    },
+    {
+      "key": "bolge",
+      "label": "Bölge · Area",
+      "width": "11em"
+    },
+    {
+      "key": "oda",
+      "label": "Oda · Rooms",
+      "width": "4.5em"
+    },
+    {
+      "key": "m2",
+      "label": "m²",
+      "width": "4.5em"
+    },
+    {
+      "key": "fiyat",
+      "label": "Fiyat · Price (£)",
+      "width": "7em"
+    },
+    {
+      "key": "esya",
+      "label": "Eşya · Furnished",
+      "options": [
+        "Eşyalı",
+        "Yarı eşyalı",
+        "Eşyasız",
+        "-"
+      ]
+    },
+    {
+      "key": "tapu",
+      "label": "Tapu · Title deed",
+      "options": [
+        "Türk koçanı",
+        "Eşdeğer koçan",
+        "Tahsis",
+        "-"
+      ]
+    },
+    {
+      "key": "durum",
+      "label": "Durum · Status",
+      "options": [
+        "Müsait",
+        "Rezerve",
+        "Satıldı",
+        "Kiralandı"
+      ]
+    },
+    {
+      "key": "not",
+      "label": "Not · Note",
+      "width": "14em"
+    }
+  ],
+  "items": [
+    {
+      "kod": "E101",
+      "islem": "Satılık",
+      "tip": "Daire",
+      "bolge": "Lefkoşa, Gönyeli",
+      "oda": "2+1",
+      "m2": "95",
+      "fiyat": "78000",
+      "esya": "Eşyasız",
+      "tapu": "Eşdeğer koçan",
+      "durum": "Müsait",
+      "not": "Asansörlü, kapalı otopark"
+    },
+    {
+      "kod": "E102",
+      "islem": "Kiralık",
+      "tip": "Daire",
+      "bolge": "Lefkoşa, Hamitköy",
+      "oda": "2+1",
+      "m2": "90",
+      "fiyat": "450",
+      "esya": "Eşyalı",
+      "tapu": "-",
+      "durum": "Müsait",
+      "not": "Üniversitelere 10 dakika"
+    },
+    {
+      "kod": "E103",
+      "islem": "Kiralık",
+      "tip": "Daire",
+      "bolge": "Lefkoşa, Yenikent",
+      "oda": "1+1",
+      "m2": "60",
+      "fiyat": "350",
+      "esya": "Eşyalı",
+      "tapu": "-",
+      "durum": "Müsait",
+      "not": "Klimalı"
+    },
+    {
+      "kod": "E104",
+      "islem": "Satılık",
+      "tip": "Villa",
+      "bolge": "Girne, Çatalköy",
+      "oda": "3+1",
+      "m2": "210",
+      "fiyat": "295000",
+      "esya": "Eşyasız",
+      "tapu": "Türk koçanı",
+      "durum": "Müsait",
+      "not": "Özel havuz, deniz manzarası"
+    },
+    {
+      "kod": "E105",
+      "islem": "Satılık",
+      "tip": "Daire",
+      "bolge": "İskele, Long Beach",
+      "oda": "1+1",
+      "m2": "70",
+      "fiyat": "115000",
+      "esya": "Eşyalı",
+      "tapu": "Eşdeğer koçan",
+      "durum": "Müsait",
+      "not": "Site havuzu, denize 300 m"
+    },
+    {
+      "kod": "E106",
+      "islem": "Satılık",
+      "tip": "Arsa",
+      "bolge": "Lefkoşa, Değirmenlik",
+      "oda": "-",
+      "m2": "1200",
+      "fiyat": "60000",
+      "esya": "-",
+      "tapu": "Türk koçanı",
+      "durum": "Müsait",
+      "not": "Yola cepheli"
+    },
+    {
+      "kod": "E107",
+      "islem": "Kiralık",
+      "tip": "Villa",
+      "bolge": "Girne, Alsancak",
+      "oda": "3+1",
+      "m2": "180",
+      "fiyat": "1200",
+      "esya": "Eşyalı",
+      "tapu": "-",
+      "durum": "Kiralandı",
+      "not": "Bahçeli"
+    },
+    {
+      "kod": "E108",
+      "islem": "Satılık",
+      "tip": "Daire",
+      "bolge": "Gazimağusa, Sakarya",
+      "oda": "3+1",
+      "m2": "140",
+      "fiyat": "98000",
+      "esya": "Eşyasız",
+      "tapu": "Eşdeğer koçan",
+      "durum": "Müsait",
+      "not": "Okullara yakın"
+    }
+  ],
+  "examples": [
+    "Merhaba, Lefkoşa'da üniversiteye yakın eşyalı kiralık daire var mı?",
+    "Hi, we'd like to buy a villa in Girne, budget around £300k. What do you have?",
+    "Здравствуйте! Есть квартира у моря в Искеле? Какой у неё тапу?",
+    "سلام، آپارتمان اجاره‌ای یک‌خوابه در لفکوشا دارید؟ ماهی چنده؟"
+  ]
+}

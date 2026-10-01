@@ -1,0 +1,312 @@
+{
+  "port": 8770,
+  "kind_label": "Oto galeri · Car gallery",
+  "model": "claude-opus-5-5",
+  "business": {
+    "name": "Demo Oto Galeri",
+    "city": "Lefkoşa",
+    "address": "(demo) Dereboyu Caddesi, Lefkoşa",
+    "maps_link": "",
+    "hours": "Pazartesi–Cumartesi 09:00–19:00, Pazar kapalı",
+    "currency": "Sterlin (£)",
+    "owner_name": "",
+    "owner_whatsapp": "",
+    "remind_hours": "2",
+    "notes": "Takas kabul ediyoruz; aracınızı galeride değerlendiriyoruz.\nTest sürüşü randevu ile yapılır, geçerli ehliyet gerekir.\nBanka kredisi başvurusunda yardımcı oluyoruz; oran ve onay bankaya bağlıdır.\nRezervasyon için kapora alınır; tutarı galeri sahibi belirler.\nFiyatlar sterlin (£) olarak verilmiştir."
+  },
+  "business_fields": [
+    {
+      "key": "name",
+      "label": "İşletme adı · Business name",
+      "required": true
+    },
+    {
+      "key": "city",
+      "label": "Şehir · City",
+      "required": true
+    },
+    {
+      "key": "address",
+      "label": "Adres · Address",
+      "required": true
+    },
+    {
+      "key": "maps_link",
+      "label": "Google Maps linki · Maps link",
+      "placeholder": "https://maps.app.goo.gl/…"
+    },
+    {
+      "key": "hours",
+      "label": "Çalışma saatleri · Opening hours",
+      "required": true
+    },
+    {
+      "key": "currency",
+      "label": "Para birimi · Currency",
+      "required": true
+    },
+    {
+      "key": "owner_name",
+      "label": "Yetkili adı · Owner's name",
+      "required": true,
+      "help": "The AI uses this name when it says who will call the customer back."
+    },
+    {
+      "key": "owner_whatsapp",
+      "label": "Yetkili WhatsApp · Owner's WhatsApp",
+      "required": true,
+      "phone": true,
+      "private": true,
+      "placeholder": "905331234567"
+    },
+    {
+      "key": "remind_hours",
+      "label": "Hatırlatma (saat) · Remind after (hours)",
+      "required": true,
+      "number": true,
+      "private": true,
+      "help": "If a waiting customer isn't marked done after this many hours, the app reminds you."
+    },
+    {
+      "key": "notes",
+      "label": "Kurallar ve bilgiler · Policies and info",
+      "long": true,
+      "help": "Trade-in, financing, test drives, deposits: anything a customer asks often. The AI treats this as true, so write only what is."
+    }
+  ],
+  "item_label": "Araçlar · Cars",
+  "item_fields": [
+    {
+      "key": "kod",
+      "label": "Kod · Code",
+      "width": "4.5em"
+    },
+    {
+      "key": "marka",
+      "label": "Marka · Make",
+      "width": "7em"
+    },
+    {
+      "key": "model",
+      "label": "Model",
+      "width": "13em"
+    },
+    {
+      "key": "yil",
+      "label": "Yıl · Year",
+      "width": "4.5em"
+    },
+    {
+      "key": "km",
+      "label": "Km",
+      "width": "6em"
+    },
+    {
+      "key": "yakit",
+      "label": "Yakıt · Fuel",
+      "options": [
+        "Benzin",
+        "Dizel",
+        "Hibrit",
+        "Elektrik",
+        "LPG"
+      ]
+    },
+    {
+      "key": "vites",
+      "label": "Vites · Gearbox",
+      "options": [
+        "Otomatik",
+        "Manuel"
+      ]
+    },
+    {
+      "key": "renk",
+      "label": "Renk · Colour",
+      "width": "6em"
+    },
+    {
+      "key": "fiyat",
+      "label": "Fiyat · Price (£)",
+      "width": "6em"
+    },
+    {
+      "key": "durum",
+      "label": "Durum · Status",
+      "options": [
+        "Satışta",
+        "Rezerve",
+        "Satıldı"
+      ]
+    },
+    {
+      "key": "not",
+      "label": "Not · Note",
+      "width": "12em"
+    }
+  ],
+  "items": [
+    {
+      "kod": "A01",
+      "marka": "Volkswagen",
+      "model": "Golf 1.6 TDI Comfortline",
+      "yil": "2019",
+      "km": "78000",
+      "yakit": "Dizel",
+      "vites": "Otomatik",
+      "renk": "Mavi",
+      "fiyat": "15500",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A02",
+      "marka": "BMW",
+      "model": "320i M Sport",
+      "yil": "2020",
+      "km": "52000",
+      "yakit": "Benzin",
+      "vites": "Otomatik",
+      "renk": "Siyah",
+      "fiyat": "28500",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A03",
+      "marka": "Toyota",
+      "model": "Corolla 1.33 Life",
+      "yil": "2018",
+      "km": "96000",
+      "yakit": "Benzin",
+      "vites": "Manuel",
+      "renk": "Kırmızı",
+      "fiyat": "12800",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A04",
+      "marka": "Mercedes",
+      "model": "C180 AMG",
+      "yil": "2021",
+      "km": "41000",
+      "yakit": "Benzin",
+      "vites": "Otomatik",
+      "renk": "Siyah",
+      "fiyat": "34000",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A05",
+      "marka": "Honda",
+      "model": "Civic 1.6 Elegance",
+      "yil": "2017",
+      "km": "118000",
+      "yakit": "Benzin",
+      "vites": "Otomatik",
+      "renk": "Siyah",
+      "fiyat": "11200",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A06",
+      "marka": "Nissan",
+      "model": "Qashqai 1.5 dCi",
+      "yil": "2019",
+      "km": "88000",
+      "yakit": "Dizel",
+      "vites": "Manuel",
+      "renk": "Beyaz",
+      "fiyat": "17900",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A07",
+      "marka": "Audi",
+      "model": "A3 Sportback 35 TFSI",
+      "yil": "2020",
+      "km": "63000",
+      "yakit": "Benzin",
+      "vites": "Otomatik",
+      "renk": "Kırmızı",
+      "fiyat": "24500",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A08",
+      "marka": "Toyota",
+      "model": "C-HR Hybrid",
+      "yil": "2022",
+      "km": "29000",
+      "yakit": "Hibrit",
+      "vites": "Otomatik",
+      "renk": "Gümüş",
+      "fiyat": "26800",
+      "durum": "Rezerve",
+      "not": ""
+    },
+    {
+      "kod": "A09",
+      "marka": "Renault",
+      "model": "Clio 1.0 TCe Joy",
+      "yil": "2021",
+      "km": "35000",
+      "yakit": "Benzin",
+      "vites": "Manuel",
+      "renk": "Turuncu",
+      "fiyat": "12400",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A10",
+      "marka": "Volkswagen",
+      "model": "Passat 1.6 TDI Highline",
+      "yil": "2018",
+      "km": "134000",
+      "yakit": "Dizel",
+      "vites": "Otomatik",
+      "renk": "Siyah",
+      "fiyat": "16700",
+      "durum": "Satışta",
+      "not": ""
+    },
+    {
+      "kod": "A11",
+      "marka": "Hyundai",
+      "model": "Tucson 1.6 CRDi",
+      "yil": "2022",
+      "km": "24000",
+      "yakit": "Dizel",
+      "vites": "Otomatik",
+      "renk": "Beyaz",
+      "fiyat": "29900",
+      "durum": "Satışta",
+      "not": "Geri görüş kamerası"
+    },
+    {
+      "kod": "A12",
+      "marka": "BMW",
+      "model": "X1 sDrive18i",
+      "yil": "2023",
+      "km": "12000",
+      "yakit": "Benzin",
+      "vites": "Otomatik",
+      "renk": "Gri",
+      "fiyat": "41000",
+      "durum": "Satışta",
+      "not": "Panoramik cam tavan"
+    }
+  ],
+  "examples": [
+    "Merhaba, 20 bin sterline kadar otomatik vites araba var mı?",
+    "Hi, is the BMW X1 still available? Could I see it on Saturday?",
+    "Здравствуйте! Есть дизельный кроссовер? Можно в кредит?",
+    "سلام، ماشین هیبریدی دارید؟ قیمتش چنده؟"
+  ]
+}

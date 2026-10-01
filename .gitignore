@@ -1,0 +1,6 @@
+# never upload keys, customer chats, leads or local installs
+**/data/
+**/.venv/
+**/__pycache__/
+**/*.json.bak
+**/*.tmp

@@ -1,0 +1,5 @@
+# never commit the API key, customer chats or leads
+data/
+.venv/
+__pycache__/
+business.json.bak
