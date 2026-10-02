@@ -1,1 +1,2 @@
 anthropic>=1.11,<2
+tzdata  # time zones on Windows, where Python has none built in

@@ -50,12 +50,29 @@ customer message ──► app.py (local server) ──► assistant.py
 
 Full walkthrough: **[HOW_IT_WORKS.md](HOW_IT_WORKS.md)**.
 
-## Run it
-```sh
-cd car-gallery        # or real-estate
-./start.sh            # first run creates .venv and installs the anthropic SDK
-```
-It opens on the Setup page and asks for a Claude API key, the owner's name and WhatsApp number.
+## Try it yourself
+You need **Python 3.10 or newer** ([python.org](https://www.python.org/downloads/)) and a **Claude API key**
+([console.anthropic.com](https://console.anthropic.com) → API Keys; a few dollars of credit is plenty to try it).
+
+1. Download this project: green **Code** button above → **Download ZIP** → unzip it.
+2. Open a terminal in the `car-gallery` folder (or `real-estate`) and run:
+
+   **Mac / Linux**
+   ```sh
+   ./start.sh
+   ```
+   **Windows** (PowerShell or Command Prompt)
+   ```bat
+   python -m venv .venv
+   .venv\Scripts\pip install -r requirements.txt
+   .venv\Scripts\python app.py
+   ```
+   Then open http://localhost:8770 (estate edition: http://localhost:8771).
+3. The page opens on **Setup**. Paste your API key, type any name and WhatsApp number as the "owner", then press **Save all**.
+4. Go to **Chat** and write as a customer would, in Turkish, English, Russian or Persian. Ask for a test drive and leave a
+   name and number, then open **Leads**.
+
+The first start takes about a minute while it installs the Claude library. Stop it with **Ctrl+C**.
 
 ## Testing
 | Test | What it covers | Result |
